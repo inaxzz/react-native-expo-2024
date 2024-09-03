@@ -15,24 +15,27 @@ export function AuthProvider({ children }) {
     user: null,
     role: null,
   });
-
+  
   const { authUser } = useUsersDatabase();
-
+  
   const signIn = async ({ email, password }) => {
     const response = await authUser({ email, password });
-
+    console.log(response);
+    
     if (!response) {
       setUser({
         autenticated: false,
         user: null,
         role: null,
       });
+      throw new Error("Usuário ou senha inválidos");
     }
+
 
     setUser({
       autenticated: true,
-      user: { id: 1, name: "Super Usuário", email },
-      role: Role.SUPER,
+      user: response,
+      role: response.role,
     });
   };
 
