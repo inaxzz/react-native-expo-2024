@@ -51,7 +51,7 @@ export default function App() {
           style={styles.emailInput}
           placeholder="Senha"
           value={password}
-          onChangeText={setPassword}
+          onChangeText={setPassword}___
           secureTextEntry={passwordVisible}
         />
         <Ionicons
