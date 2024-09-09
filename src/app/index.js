@@ -64,7 +64,7 @@ export default function App() {
 
       <Button
         style={styles.button}
-        title="Entrar"
+               title="Entrar"
         onPress={handleEntrarSuper}
       />
 
