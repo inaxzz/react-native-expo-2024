@@ -1,0 +1,33 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+
+
+Table users {
+  id integer [primary key, increment]
+  nome text [not null]
+  rm text
+  email text [not null, unique]
+  senha text [not null, default: 'A123456a!']
+  role text
+  created_at date [default: 'CURRENT_TIMESPAMP']
+  update_at date
+}
+
+
+
+Table payments {
+  id integer [primary key, increment]
+  user_id integer [not null, note: "Quem deve pagar"]
+  user_cadastro integer [not null, note: 'Quem cadastrou a conta' ]
+  valor_pago real
+  data_pagamento date
+  observacao text 
+  created_at date [default: 'CURRENT_TIMESPAMP']
+  update_at date
+}
+
+Ref: payments.user_id > users.id [delete: cascade, update: no action]
+
+Ref: payments.user_cadastro > users.id [delete: cascade, update: no action]
+
