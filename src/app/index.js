@@ -104,5 +104,9 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
+    backgroundColor: "#007BFF", // Cor de fundo do botão
+    padding: 10, // Espaçamento interno
+    borderRadius: 5, // Bordas arredondadas
+    alignItems: "center", // Alinhamento do texto no centro
   },
 });
