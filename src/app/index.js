@@ -4,9 +4,10 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
+  TouchableOpacity,
   TextInput,
   Alert,
+  Image,
 } from "react-native";
 import { useAuth } from "../hooks/Auth";
 import { router } from "expo-router";
@@ -19,7 +20,7 @@ export default function App() {
   const [password, setPassword] = useState("A123456a!");
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const tooglePasswordVisibility = () => {
+  const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
@@ -35,44 +36,54 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Aplicativo Pronto para usar</Text>
+      <Image
+        style={styles.logo}
+        source={require("/workspaces/react-native-expo-2024/src/assets/controle.png")}
+      />
       <View style={styles.inputBox}>
-        <Ionicons name="mail-open-outline" size={20} color="black" />
+        <Ionicons name="mail-open-outline" size={20} color="gray" />
         <TextInput
           style={styles.emailInput}
           placeholder="E-mail"
+          placeholderTextColor="gray"
           value={email}
           onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
         />
       </View>
       <View style={styles.inputBox}>
-        <Ionicons name="lock-closed-outline" size={20} color="black" />
+        <Ionicons name="lock-closed-outline" size={20} color="gray" />
         <TextInput
           style={styles.emailInput}
           placeholder="Senha"
+          placeholderTextColor="gray"
           value={password}
-          onChangeText={setPassword}___
-          secureTextEntry={passwordVisible}
+          onChangeText={setPassword}
+          secureTextEntry={!passwordVisible}
+          autoCapitalize="none"
         />
         <Ionicons
           name={passwordVisible ? "eye-off-outline" : "eye-outline"}
           size={20}
-          color="black"
-          onPress={tooglePasswordVisibility}
+          color="gray"
+          onPress={togglePasswordVisibility}
+          style={styles.eyeIcon}
         />
       </View>
 
-      <Button
-        style={styles.button}
-               title="Entrar"
-        onPress={handleEntrarSuper}
-      />
+      <TouchableOpacity style={styles.button} onPress={handleEntrarSuper}>
+        <Text style={styles.buttonText}>Entrar</Text>
+      </TouchableOpacity>
 
-      <Button title="Sobre" onPress={() => router.push("/about")} />
-      <Button
-        title="Sair do Aplicativo"
-        onPress={() => BackHandler.exitApp()}
-      />
+      <TouchableOpacity onPress={() => router.push("/about")}>
+        <Text style={styles.link}>Sobre</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => BackHandler.exitApp()}>
+        <Text style={styles.link}>Sair do Aplicativo</Text>
+      </TouchableOpacity>
+
       <StatusBar style="auto" />
     </View>
   );
@@ -81,32 +92,57 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f7f7f7", // Fundo suave
     alignItems: "center",
     justifyContent: "center",
-    gap: 15,
+    padding: 20,
+    gap: 20,
   },
-  title: {
-    fontFamily: "regular",
-    fontSize: 20,
+  logo: {
+    width: 350, // Aumentei o tamanho da imagem
+    height: 350,
+    marginBottom: 30,
+    resizeMode: "contain", // Mantém proporção correta
   },
   inputBox: {
     flexDirection: "row",
-    gap: 10,
-    marginHorizontal: 40,
-    marginVertical: 10,
     alignItems: "center",
+    backgroundColor: "#fff",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 15,
+    width: "100%",
+    top: -100,
   },
   emailInput: {
     flex: 1,
-    fontFamily: "regular",
-    fontSize: 20,
+    fontSize: 18,
+    paddingLeft: 10,
+  },
+  eyeIcon: {
+    paddingLeft: 10,
   },
   button: {
+    backgroundColor: "#007BFF",
+    paddingVertical: 15,
+    paddingHorizontal: 100,
+    borderRadius: 8,
+    marginVertical: 20,
     width: "100%",
-    backgroundColor: "#007BFF", // Cor de fundo do botão
-    padding: 10, // Espaçamento interno
-    borderRadius: 5, // Bordas arredondadas
-    alignItems: "center", // Alinhamento do texto no centro
+    alignItems: "center",
+    top: -100,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  link: {
+    color: "#007BFF",
+    fontSize: 16,
+    marginTop: 10,
+    top: -100,
   },
 });
