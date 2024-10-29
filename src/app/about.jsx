@@ -29,7 +29,7 @@ export default function About() {
       <Button
         title="Voltar"
         onPress={() => {
-          router.replace("/");
+          router.back("/");
         }}
       />
     </ScrollView>

@@ -27,7 +27,6 @@ export default function App() {
   const handleEntrarSuper = async () => {
     try {
       await signIn({ email, password });
-      router.replace("/");
     } catch (error) {
       Alert.alert("Erro", error.message);
       console.log(error);
@@ -76,7 +75,7 @@ export default function App() {
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push("/about")}>
+      <TouchableOpacity onPress={() => router.push("about")}>
         <Text style={styles.link}>Sobre</Text>
       </TouchableOpacity>
 
@@ -92,17 +91,17 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f7f7f7", // Fundo suave
+    backgroundColor: "#f7f7f7", 
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
     gap: 20,
   },
   logo: {
-    width: 350, // Aumentei o tamanho da imagem
+    width: 350,
     height: 350,
     marginBottom: 30,
-    resizeMode: "contain", // Mantém proporção correta
+    resizeMode: "contain", 
   },
   inputBox: {
     flexDirection: "row",

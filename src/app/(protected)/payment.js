@@ -12,8 +12,10 @@ import {
 import Ionics from "@expo/vector-icons/Ionicons";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { z } from "zod";
-import {useAuth} from "../../hooks/Auth/index";
+import { set, z } from "zod";
+import { usePaymentsDatabase } from "../../database/usePaymentsDatabase";
+import { useUsersDatabase } from "../../database/useUserDatabase";
+import { useAuth } from "../../hooks/Auth/index";
 
 const paymentSchema = z.object({
   valor_pago: z.number().gt(0),
@@ -25,154 +27,15 @@ const paymentSchema = z.object({
 
 export default function Payment() {
   const [valor, setValor] = useState("0,00");
-  const [sugestoes, setSugestoes] = useState([
-    {
-      id: 1,
-      nome: "Trula Matiebe",
-    },
-    {
-      id: 2,
-      nome: "Nicolai Booth",
-    },
-    {
-      id: 3,
-      nome: "Abagael Brose",
-    },
-    {
-      id: 4,
-      nome: "Audra Pezey",
-    },
-    {
-      id: 5,
-      nome: "Bianka Czaja",
-    },
-    {
-      id: 6,
-      nome: "Maison Huckin",
-    },
-    {
-      id: 7,
-      nome: "Goldia Williscroft",
-    },
-    {
-      id: 8,
-      nome: "Cliff Lockery",
-    },
-    {
-      id: 9,
-      nome: "Ellene Hamlington",
-    },
-    {
-      id: 10,
-      nome: "Lolly Bondy",
-    },
-    {
-      id: 11,
-      nome: "Yehudit Habergham",
-    },
-    {
-      id: 12,
-      nome: "Rem Follan",
-    },
-    {
-      id: 13,
-      nome: "Fax Pothecary",
-    },
-    {
-      id: 14,
-      nome: "Blinni Moreman",
-    },
-    {
-      id: 15,
-      nome: "Anabel Karlqvist",
-    },
-    {
-      id: 16,
-      nome: "Schuyler Splevings",
-    },
-    {
-      id: 17,
-      nome: "Scott Wybern",
-    },
-    {
-      id: 18,
-      nome: "Jeanine Peppard",
-    },
-    {
-      id: 19,
-      nome: "Greer Branwhite",
-    },
-    {
-      id: 20,
-      nome: "Joane Vaughan",
-    },
-    {
-      id: 21,
-      nome: "Temp Glenton",
-    },
-    {
-      id: 22,
-      nome: "Gabbey Bray",
-    },
-    {
-      id: 23,
-      nome: "Derick Giraldon",
-    },
-    {
-      id: 24,
-      nome: "Ryun Coppins",
-    },
-    {
-      id: 25,
-      nome: "Cletis Goseling",
-    },
-    {
-      id: 26,
-      nome: "Tildy Sheehy",
-    },
-    {
-      id: 27,
-      nome: "Harold Gosling",
-    },
-    {
-      id: 28,
-      nome: "Kailey Normadell",
-    },
-    {
-      id: 29,
-      nome: "Willey Aggett",
-    },
-    {
-      id: 30,
-      nome: "Richie Tiffany",
-    },
-    {
-      id: 31,
-      nome: "Levey Waterson",
-    },
-    {
-      id: 32,
-      nome: "Lavinie Laxe",
-    },
-    {
-      id: 33,
-      nome: "Susy McKniely",
-    },
-    {
-      id: 34,
-      nome: "Flo Dudmarsh",
-    },
-    {
-      id: 35,
-      nome: "Gaspar Shovelin",
-    },
-  ]);
+  const [sugestoes, setSugestoes] = useState([]);
   const [id, setId] = useState(1);
   const [data, setData] = useState(new Date());
   const [viewCalendar, setViewCalendar] = useState(false);
   const [observacao, setObservacao] = useState("");
   const valueRef = useRef();
-  const {user} = useAuth();
+  const { user } = useAuth();
+  const { createPayment } = usePaymentsDatabase();
+  const { getAllusers } = useUsersDatabase();
 
   const handleCalendar = (event, selectedDate) => {
     setViewCalendar(false);
@@ -180,7 +43,16 @@ export default function Payment() {
   };
 
   useEffect(() => {
-    valueRef?.current?.focus();
+    (async () => {
+      valueRef?.current?.focus();
+      try {
+        const users = await getAllusers();
+        setSugestoes(users);
+        setId(users[0].id);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
   }, []);
 
   const handleChangeValor = (value) => {
@@ -225,7 +97,13 @@ export default function Payment() {
 
     try {
       const result = await paymentSchema.parseAsync(payment);
-      console.log(result);
+      const { insertedID } = await createPayment(payment);
+      console.log(insertedID);
+      setValor("0,00");
+      setId(sugestoes[0].id);
+      setData(new Date());
+      setObservacao("");
+      valueRef?.current?.focus();
     } catch (error) {
       console.log(error);
     }
