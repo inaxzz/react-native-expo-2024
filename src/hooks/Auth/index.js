@@ -43,12 +43,12 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    console.log("AuthProvider: ", user);
+    //console.log("AuthProvider: ", user);
   }, [user]);
 
   const signIn = async ({ email, password }) => {
     const response = await authUser({ email, password });
-    console.log(response);
+    //console.log(response);
 
     if (!response) {
       setUser({
@@ -74,7 +74,7 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    console.log("AuthProvider", user);
+    //console.log("AuthProvider", user);
   }, [user]);
 
   if (user.autenticated === null) {
