@@ -83,6 +83,10 @@ export default function App() {
         <Text style={styles.link}>Sair do Aplicativo</Text>
       </TouchableOpacity>
 
+      <TouchableOpacity onPress={() => router.push("/maintenance")}>
+        <Text style={styles.link}>Banco de dados</Text>
+      </TouchableOpacity>
+
       <StatusBar style="auto" />
     </View>
   );
