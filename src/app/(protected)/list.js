@@ -1,39 +1,36 @@
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
-import { usePaymentsDatabase } from "../../database/usePaymentsDatabase";
+import { useProductsDatabase } from "../../database/useProductsDatabase"; // Alterado para o banco de produtos
 import { FlashList } from "@shopify/flash-list";
-import { formatDateToBrazilian } from "../../utils/formatData";
-import { formatCurrencyBRL } from "../../utils/formatCurrent";
+import { formatCurrencyBRL } from "../../utils/formatCurrent"; // Continua útil para preços
 import { set } from "zod";
 
-export default function List() {
+export default function ProductList() {
   const [data, setData] = useState([]);
-  const { getPayments } = usePaymentsDatabase();
-  const [page, setPage] = useState(0); //Controlar qual página o sistema já carregou.
-  const [loading, setLoading] = useState(true); // Controlar se está carregando os dados do banco.
-  const [hasMore, setHasMore] = useState(true); // Controlar se tem mais dados para carregar.
+  const { getProducts } = useProductsDatabase(); // Função para buscar produtos
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
 
   async function fetchData() {
-    if (hasMore == false) return; // Se está flag for falsa, não tem mais dados para carregar.
+    if (hasMore === false) return;
     console.log(page);
 
     setPage(page + 1);
-    //vai buscar no banco de dados os dados os pagaments
-    const payments = await getPayments(page);
 
-    if (payments.length < 5) setHasMore(false); // Se a quantidade de dados for menor que 5, não tem mais dados para carregar.
-    //console.log(payments);
-    setData([...data, ...payments]);
+    const products = await getProducts(page); // Busca produtos ao invés de pagamentos
+
+    if (products.length < 5) setHasMore(false);
+    setData([...data, ...products]);
     setLoading(false);
   }
 
   useEffect(() => {
-    //Executa a primeira fez a busca de dados
     setPage(0);
     fetchData();
   }, []);
 
-  renderItem = ({ item }) => (
+  const renderItem = ({ item }) => (
     <View
       style={{
         flexDirection: "row",
@@ -46,13 +43,12 @@ export default function List() {
     >
       <View style={{ flex: 1, gap: 5 }}>
         <Text style={{ fontFamily: "bold", color: "#fff", fontSize: 18, textTransform: "uppercase" }}>
-          {item.nome}
+          {item.nome} {/* Nome do produto */}
         </Text>
         <View style={{ flexDirection: "row", gap: 10 }}>
           <Text style={{ fontFamily: "regular", color: "#fff" }}>
-            {formatDateToBrazilian(item.data_pagamento || new Date())}
+            {item.descricao || "Sem descrição"} {/* Descrição do produto */}
           </Text>
-          <Text style={{ color: "#fff" }}>{item.numero_recibo}</Text>
         </View>
       </View>
       <View>
@@ -64,7 +60,7 @@ export default function List() {
             color: "#fff",
           }}
         >
-          {formatCurrencyBRL(item.valor_pago || 0)}
+          {formatCurrencyBRL(item.preco || 0)} {/* Preço do produto */}
         </Text>
       </View>
     </View>
